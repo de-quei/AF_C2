@@ -14,6 +14,18 @@ int main()
 	Vector2i mouse_pos;
 	int click_cnt = 0;     //마우스 누른 횟수
 
+	//폰트
+	Font font;
+	font.loadFromFile("c:/Windows/Fonts/Arial.ttf");
+
+	//텍스트
+	Text text;
+	text.setFont(font);
+	text.setCharacterSize(30);
+	text.setFillColor(Color::White);
+	text.setPosition(0, 0);
+	char info[40];
+
 	while (window.isOpen())
 	{
 		mouse_pos = Mouse::getPosition(window);
@@ -26,21 +38,23 @@ int main()
 			case Event::Closed :
 				window.close();
 				break;
-				//한 번 누르면 한 번만 적용
+			//한 번 누르면 한 번만 적용
 			case Event::MouseButtonPressed:
-				if (event.mouseButton.button == Mouse::Right)
+				if (event.mouseButton.button == Mouse::Left)
 				{
 					click_cnt++;
 				}
 			}
 		}
 
-		//마우스 누른 상태면 여러번 증가함
-		if (Mouse::isButtonPressed(Mouse::Left))
-		{
-			click_cnt++;
-		}
-		printf("(%d, %d) 클릭횟수 : %d\n", mouse_pos.x, mouse_pos.y, click_cnt);
+		sprintf(info, "(%d, %d) / CLICKS : %d\n", mouse_pos.x, mouse_pos.y, click_cnt);
+		text.setString(info);
+
+		window.clear(Color::Black);
+
+		window.draw(text);
+
+		window.display();
 	}
 
 	return 0;
