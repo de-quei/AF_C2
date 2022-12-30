@@ -6,8 +6,18 @@
 
 using namespace sf;
 
+const int arr_cnt = 4;
+
+struct Card{
+	RectangleShape sprite;
+	int id;
+};
+
 int main()
 {
+	int CARD_W = 200;
+	int CARD_H = 200;
+
 	RenderWindow window(VideoMode(1200, 800), "Card Game!");
 	window.setFramerateLimit(60);
 
@@ -25,6 +35,17 @@ int main()
 	text.setFillColor(Color::White);
 	text.setPosition(0, 0);
 	char info[40];
+
+	struct Card cards[arr_cnt][arr_cnt];
+	for (int i = 0; i < arr_cnt; i++) 
+	{
+		for (int j = 0; j < arr_cnt; j++)
+		{
+			cards[i][j].sprite.setSize(Vector2f(CARD_W, CARD_H));
+			cards[i][j].sprite.setPosition(j * CARD_W, i * CARD_H);
+			cards[i][j].sprite.setFillColor(Color(i * 64, j * 64, 128));
+		}
+	}
 
 	while (window.isOpen())
 	{
@@ -51,6 +72,13 @@ int main()
 		text.setString(info);
 
 		window.clear(Color::Black);
+		for (int i = 0; i < arr_cnt; i++)
+		{
+			for (int j = 0; j < arr_cnt; j++)
+			{
+				window.draw(cards[i][j].sprite);
+			}
+		}
 
 		window.draw(text);
 
