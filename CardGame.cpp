@@ -11,6 +11,7 @@ const int arr_cnt = 4;
 struct Card{
 	RectangleShape sprite;
 	int id;
+	int type;
 };
 
 int main()
@@ -56,6 +57,8 @@ int main()
 			cards[i][j].sprite.setSize(Vector2f(CARD_W, CARD_H));
 			cards[i][j].sprite.setPosition(j * CARD_W, i * CARD_H);
 			cards[i][j].sprite.setTexture(&texture[1+n/2]);
+			cards[i][j].type = 1 + n / 2;
+			cards[i][j].id = n + 1;
 			n++;
 		}
 	}
