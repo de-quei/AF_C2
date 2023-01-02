@@ -28,7 +28,7 @@ void swap_card(struct Card* c1, struct Card* c2)
 
 int main(void)
 {
-	RenderWindow window(VideoMode(1200, 800), "Match the OverWatch Healer Cards!");
+	RenderWindow window(VideoMode(1200, 800), "Let's Match the Cards of Overwatch Healer!");
 	window.setFramerateLimit(60);
 
 	Vector2i mouse_pos;
