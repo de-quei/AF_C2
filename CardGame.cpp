@@ -6,7 +6,7 @@
 
 using namespace sf;
 
-const int S = 4;
+const int arr_size = 4;
 const int CARD_W = 200;
 const int CARD_H = 200;
 
@@ -40,20 +40,21 @@ int main(void)
 
 	srand(time(0));
 
-	Texture t[8 + 1];
-	t[0].loadFromFile("./resources/ch0.png");
-	t[1].loadFromFile("./resources/ch1.png");
-	t[2].loadFromFile("./resources/ch2.png");
-	t[3].loadFromFile("./resources/ch3.png");
-	t[4].loadFromFile("./resources/ch4.png");
-	t[5].loadFromFile("./resources/ch5.png");
-	t[6].loadFromFile("./resources/ch6.png");
-	t[7].loadFromFile("./resources/ch7.png");
-	t[8].loadFromFile("./resources/ch8.png");
+	Texture texture[8 + 1];
+	texture[0].loadFromFile("./resources/ch0.png");
+	texture[1].loadFromFile("./resources/ch1.png");
+	texture[2].loadFromFile("./resources/ch2.png");
+	texture[3].loadFromFile("./resources/ch3.png");
+	texture[4].loadFromFile("./resources/ch4.png");
+	texture[5].loadFromFile("./resources/ch5.png");
+	texture[6].loadFromFile("./resources/ch6.png");
+	texture[7].loadFromFile("./resources/ch7.png");
+	texture[8].loadFromFile("./resources/ch8.png");
 
 	Font font;
 	font.loadFromFile("c:/Windows/Fonts/arial.ttf");
 
+	//텍스트
 	Text text;
 	text.setFont(font);
 	text.setCharacterSize(30);
@@ -61,15 +62,21 @@ int main(void)
 	text.setPosition(0, 0);
 	char info[40];
 
+	//사운드
+	SoundBuffer C_buffer;
+	C_buffer.loadFromFile("./resources/kill.wav");
+	Sound C_sound;
+	C_sound.setBuffer(C_buffer);
+
 	struct Card compare_card;	// 첫 번째로 뒤집힌 카드
-	struct Card cards[S][S];
+	struct Card cards[arr_size][arr_size];
 	int n = 0;
-	for (int i = 0; i < S; i++)
+	for (int i = 0; i < arr_size; i++)
 	{
-		for (int j = 0; j < S; j++)
+		for (int j = 0; j < arr_size; j++)
 		{
 			cards[i][j].sprite.setSize(Vector2f(CARD_W, CARD_H));
-			cards[i][j].sprite.setTexture(&t[0]);
+			cards[i][j].sprite.setTexture(&texture[0]);
 			cards[i][j].type = 1 + n / 2;
 			cards[i][j].is_clicked = 0;
 			cards[i][j].is_cleared = 0;
@@ -80,13 +87,13 @@ int main(void)
 	// 카드 100번 섞기
 	for (int i = 0; i < 100; i++)
 	{
-		swap_card(&(cards[rand() % S][rand() % S]), &(cards[rand() % S][rand() % S]));
+		swap_card(&(cards[rand() % arr_size][rand() % arr_size]), &(cards[rand() % arr_size][rand() % arr_size]));
 	}
 
 	// idx에 맞춰서 id값, 위치 조정
-	for (int i = 0; i < S; i++)
+	for (int i = 0; i < arr_size; i++)
 	{
-		for (int j = 0; j < S; j++)
+		for (int j = 0; j < arr_size; j++)
 		{
 			cards[i][j].id_i = i;
 			cards[i][j].id_j = j;
@@ -116,9 +123,9 @@ int main(void)
 			case Event::MouseButtonPressed:
 				if (event.mouseButton.button == Mouse::Left)
 				{
-					for (int i = 0; i < S; i++)
+					for (int i = 0; i < arr_size; i++)
 					{
-						for (int j = 0; j < S; j++)
+						for (int j = 0; j < arr_size; j++)
 						{
 							if (flipped_num < 2)
 							{
@@ -142,6 +149,7 @@ int main(void)
 											// 두 카드가 같은 종류면
 											if (compare_card.type == cards[i][j].type)
 											{
+												C_sound.play();
 												cards[i][j].is_cleared = 1;
 												cards[compare_card.id_i][compare_card.id_j].is_cleared = 1;
 											}
@@ -160,17 +168,19 @@ int main(void)
 			}
 		}
 
-		for (int i = 0; i < S; i++)
+		for (int i = 0; i < arr_size; i++)
 		{
-			for (int j = 0; j < S; j++)
+			for (int j = 0; j < arr_size; j++)
 			{
 				// 클릭이 된 상태이거나, 정답을 맞춘 카드이면
 				if (cards[i][j].is_clicked == 1 || cards[i][j].is_cleared == 1)
+				{
 					// 그림이 있는 스프라이트로 변경(카드를 뒤집겠다는 의미)
-					cards[i][j].sprite.setTexture(&t[cards[i][j].type]);
+					cards[i][j].sprite.setTexture(&texture[cards[i][j].type]);
+				}
 				else
 					// 카드는 ???상태
-					cards[i][j].sprite.setTexture(&t[0]);
+					cards[i][j].sprite.setTexture(&texture[0]);
 			}
 		}
 
@@ -183,8 +193,8 @@ int main(void)
 			}
 			else
 			{	// 다 ?상태로 만들어 버리겠다
-				for (int i = 0; i < S; i++)
-					for (int j = 0; j < S; j++)
+				for (int i = 0; i < arr_size; i++)
+					for (int j = 0; j < arr_size; j++)
 						cards[i][j].is_clicked = 0;
 				flipped_num = 0;
 			}
@@ -196,9 +206,9 @@ int main(void)
 
 
 		window.clear(Color::Black);
-		for (int i = 0; i < S; i++)
+		for (int i = 0; i < arr_size; i++)
 		{
-			for (int j = 0; j < S; j++)
+			for (int j = 0; j < arr_size; j++)
 			{
 				window.draw(cards[i][j].sprite);
 			}
