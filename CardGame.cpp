@@ -72,6 +72,14 @@ int main(void)
 	F_buffer.loadFromFile("./resources/BookFlip2.wav");
 	Sound F_sound;
 	F_sound.setBuffer(F_buffer);
+	
+	//BGM
+	SoundBuffer BGM_buffer;
+	BGM_buffer.loadFromFile("./resources/overwatchBGM.wav");
+	Sound BGM_sound;
+	BGM_sound.setBuffer(BGM_buffer);
+	BGM_sound.setLoop(1);   // BGM 무한반복
+	BGM_sound.play();
 
 	struct Card compare_card;	// 첫 번째로 뒤집힌 카드
 	struct Card cards[arr_size][arr_size];
