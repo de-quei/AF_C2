@@ -68,6 +68,11 @@ int main(void)
 	Sound C_sound;
 	C_sound.setBuffer(C_buffer);
 
+	SoundBuffer F_buffer;
+	F_buffer.loadFromFile("./resources/BookFlip2.wav");
+	Sound F_sound;
+	F_sound.setBuffer(F_buffer);
+
 	struct Card compare_card;	// 첫 번째로 뒤집힌 카드
 	struct Card cards[arr_size][arr_size];
 	int n = 0;
@@ -135,6 +140,7 @@ int main(void)
 									// 뒤집혀지지 않은 카드만 뒤집겠다.
 									if (cards[i][j].is_clicked == 0)
 									{
+										F_sound.play();
 										cards[i][j].is_clicked = 1;
 										flipped_num++;
 
