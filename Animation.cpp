@@ -1,19 +1,18 @@
-#include<SFML/Graphics.hpp>
-#include<stdlib.h>
-#include<time.h>
+#include <SFML/Graphics.hpp>
+#include <time.h>
 
 using namespace sf;
 
 struct Player {
 	RectangleShape sprite;
-	int fps;                 // Frames per sec
-	int idx;                 // 애니메이션 index
-	int frame_num;           // 애니메이션 frame수
-	long ani_time;           // 애니메이션이 바뀔 때의 시간
-
+	int fps;					// frames per sec
+	int idx;					// 애니메이션 index
+	int frames;					// 애니메이션 frame수
+	int speed;
+	long ani_time;				// 애니메이션이 바뀔 때의 시각
 };
 
-int main()
+int main(void)
 {
 	RenderWindow window(VideoMode(1200, 800), "Animation");
 	window.setFramerateLimit(60);
@@ -35,8 +34,9 @@ int main()
 
 	struct Player player;
 	player.fps = 10;
-	player.frame_num = 10;
+	player.frames = 10;
 	player.idx = 0;
+	player.speed = 5;
 	player.sprite.setTexture(&run[0]);
 	player.sprite.setSize(Vector2f(90, 120));
 	player.sprite.setPosition(200, 600);
@@ -55,20 +55,30 @@ int main()
 			case Event::Closed:
 				window.close();
 				break;
-
 			default:
 				break;
 			}
 		}
 
+		if (Keyboard::isKeyPressed(Keyboard::Right))
+		{
+			player.sprite.setScale(1, 1);
+			player.sprite.move(player.speed, 0);
+		}
+		else if(Keyboard::isKeyPressed(Keyboard::Left))
+		{
+			player.sprite.setScale(-1, 1);
+			player.sprite.move(-player.speed, 0);
+		}
+
 		// 0.1초마다 애니메이션 그림이 바뀜
-		while (spent_time - player.ani_time > 1000 / player.frame_num);
+		while (spent_time - player.ani_time > 1000 / player.frames)
 		{
 			player.ani_time = spent_time;
-			player.sprite.setTexture(&run[player.idx % player.frame_num]);
+			player.sprite.setTexture(&run[player.idx % player.frames]);
 			player.idx++;
 		}
-		
+
 		window.clear(Color::Magenta);
 
 		window.draw(player.sprite);
