@@ -25,6 +25,10 @@ void swap_card(struct Card* c1, struct Card* c2)
 	*c1 = *c2;
 	*c2 = temp;
 }
+struct Textures {
+	Texture match;
+	Texture gameover;
+};
 
 int main(void)
 {
@@ -33,6 +37,7 @@ int main(void)
 
 	Vector2i mouse_pos;
 	int flipped_num = 0;		// 현재 뒤집혀진 카드의 갯수
+	int life = 5;
 
 	long start_time;
 	long spent_time;
@@ -51,8 +56,25 @@ int main(void)
 	texture[7].loadFromFile("./resources/ch7.png");
 	texture[8].loadFromFile("./resources/ch8.png");
 
+	//게임오버 & 매치
+	struct Textures t;
+	t.match.loadFromFile("./resources/match.png");
+	t.gameover.loadFromFile("./resources/gameover.png");
+
+	Sprite gameover_sprite;
+	gameover_sprite.setTexture(t.gameover);
+	gameover_sprite.setPosition(300, 350); // 정가운데 위치 공식
+
 	Font font;
 	font.loadFromFile("c:/Windows/Fonts/arial.ttf");
+
+	//BGM
+	SoundBuffer BGM_buffer;
+	BGM_buffer.loadFromFile("./resources/overwatchBGM.wav");
+	Sound BGM_sound;
+	BGM_sound.setBuffer(BGM_buffer);
+	BGM_sound.setLoop(1);   // BGM 무한반복
+	BGM_sound.play();
 
 	//텍스트
 	Text text;
@@ -72,14 +94,6 @@ int main(void)
 	F_buffer.loadFromFile("./resources/BookFlip2.wav");
 	Sound F_sound;
 	F_sound.setBuffer(F_buffer);
-	
-	//BGM
-	SoundBuffer BGM_buffer;
-	BGM_buffer.loadFromFile("./resources/overwatchBGM.wav");
-	Sound BGM_sound;
-	BGM_sound.setBuffer(BGM_buffer);
-	BGM_sound.setLoop(1);   // BGM 무한반복
-	BGM_sound.play();
 
 	struct Card compare_card;	// 첫 번째로 뒤집힌 카드
 	struct Card cards[arr_size][arr_size];
@@ -170,6 +184,7 @@ int main(void)
 											// 두 카드가 다른 종류이면
 											else
 											{
+												life -= 1;
 												delay_time = spent_time;
 											}
 										}
@@ -215,7 +230,7 @@ int main(void)
 		}
 
 
-		sprintf(info, "%d \n", spent_time / 1000);
+		sprintf(info, "%d / Life : %d\n", spent_time / 1000, life);
 		text.setString(info);
 
 
@@ -230,6 +245,10 @@ int main(void)
 
 		window.draw(text);
 
+		if (life <= 0)
+		{
+			window.draw(gameover_sprite);
+		}
 		window.display();
 	}
 	return 0;
